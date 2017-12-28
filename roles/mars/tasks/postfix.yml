@@ -1,0 +1,132 @@
+# postfix.yml - Downloads and builds Postfix 2.6.19.
+---
+- name: make sure exim4 isn't running
+  systemd:
+    name: exim4
+    state: stopped
+  become: yes
+
+- name: make sure exim4 is disabled
+  systemd:
+    name: exim4
+    enabled: no
+  become: yes
+
+- name: install dependencies
+  apt:
+    name: postfix
+    state: build-dep
+    update_cache: yes
+  become: yes
+
+- name: install build tools
+  apt:
+    name: build-essential
+    state: latest
+    update_cache: yes
+  become: yes
+
+- name: download and unpack source
+  unarchive:
+    src: ftp://ftp.reverse.net/pub/postfix/official/postfix-2.6.19.tar.gz
+    dest: /tmp
+    remote_src: True
+
+# The build process for Postfix does not work by default in a base Debian
+# install. The following steps modify the makedefs file to look in another
+# location on the filesystem that libraries are found, and copies two stubborn
+# libraries to a more generic name, which allows make to find them.
+
+- name: augment makedefs
+  replace:
+    path: /tmp/postfix-2.6.19/makedefs
+    regexp: '^(.*)for lib in \/usr\/lib64(.*)$'
+    replace: 'for lib in /usr/lib64 /lib64 /usr/lib /lib /lib/x86_64-linux-gnu'
+
+- name: copy file 1
+  command: |
+    cp /lib/x86_64-linux-gnu/libnsl.so.1
+    /lib/x86_64-linux-gnu/libnsl.so
+  become: yes
+
+- name: copy file 2
+  command: |
+    cp /lib/x86_64-linux-gnu/libresolv.so.2
+    /lib/x86_64-linux-gnu/libresolv.so
+  become: yes
+
+- name: build postfix
+  make:
+    chdir: /tmp/postfix-2.6.19
+
+- name: add postfix user
+  user:
+    name: postfix
+  become: yes
+
+- name: add postdrop group
+  group:
+    name: postdrop
+    state: present
+  become: yes
+
+- name: make postfix-install executable
+  file:
+    path: /tmp/postfix-2.6.19/postfix-install
+    mode: "o+x"
+  become: yes
+
+- name: install postfix
+  raw: cd /tmp/postfix-2.6.19 && /bin/sh ./postfix-install -non-interactive
+  become: yes
+
+- name: copy aliases
+  copy:
+    src: ../files/aliases
+    dest: /etc/aliases
+    owner: root
+    group: root
+  become: yes
+
+- name: copy main.cf
+  copy:
+    src: ../files/main.cf
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+  become: yes
+
+- name: initialize /etc/aliases.db
+  command: postalias /etc/aliases
+  become: yes
+
+- name: start postfix
+  command: postfix start
+  become: yes
+  ignore_errors: yes # Will fail if already running
+
+- name: remove files from /tmp
+  file:
+    path: /tmp/postfix-2.6.19
+    state: absent
+
+# This will automatically start Postfix on startup.
+
+- name: remove exit 0 from /etc/rc.local temporarily
+  lineinfile:
+    path: /etc/rc.local
+    line: "exit 0"
+    state: absent
+  become: yes
+
+- name: add postfix start to /etc/rc.local
+  lineinfile:
+    path: /etc/rc.local
+    line: "/usr/sbin/postfix start"
+  become: yes
+
+- name: return exit 0 to /etc/rc.local
+  lineinfile:
+    path: /etc/rc.local
+    line: "exit 0"
+  become: yes

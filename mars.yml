@@ -1,0 +1,9 @@
+# mail.yml - Map the mail group to the mail role.
+# Note: This playbook takes a long time to complete, since Horde Webmail is
+# pretty large. The approximate runtime for this playbook is 13 minutes, 55
+# seconds.
+# This playbook must be run with the -K flag.
+---
+- hosts: all
+  roles:
+    - mars
