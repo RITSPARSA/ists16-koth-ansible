@@ -94,14 +94,6 @@
     dest: /var/www/html
   become: yes
 
-- name: move portal files
-  command: mv /var/www/html/portal/* /var/www/html
-  become: yes
-
-- name: delete original portal directory
-  command: rmdir /var/www/html/portal
-  become: yes
-
 - name: make sure everything in /var/www/html is owned by apache
   file:
     path: /var/www/html
