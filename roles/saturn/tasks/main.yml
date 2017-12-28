@@ -1,5 +1,4 @@
-# main.yml - Installs Apache on the webserver and pulls down vulnerable portal
-# webapp from GitHub.
+# main.yml - Installs webserver stuff, puts portal down using rsync, creates flag
 # This playbook was designed to be run with -K.
 ---
 - name: install libselinux-python # various commands fail without selinux bindings
@@ -69,13 +68,6 @@
   service:
     name: mysqld
     enabled: yes
-  become: yes
-
-- name: put hostname into httpd.conf
-  lineinfile:
-    path: /etc/httpd/conf/httpd.conf
-    regexp: '#ServerName www.example.com:80'
-    line: 'ServerName www.metropolis-general.com:80'
   become: yes
 
 - name: flush iptables rules

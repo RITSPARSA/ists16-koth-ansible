@@ -1,3 +1,5 @@
+# saturn.yml - Deploy the saturn irateplow machine.
+# Flag location: /var/www/html/flag.txt
 # This playbook must be run with the -K flag.
 ---
 - hosts: saturn
