@@ -1,0 +1,119 @@
+# main.yml - Installs Apache on the webserver and pulls down vulnerable portal
+# webapp from GitHub.
+# This playbook was designed to be run with -K.
+---
+- name: install apache
+  yum:
+    name: httpd
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: install php
+  yum:
+    name: php
+    state: present
+  become: yes
+
+- name: install mysql
+  yum:
+    name: mysql-server
+    state: present
+  become: yes
+
+- name: install php-mysql
+  yum:
+    name: php-mysql
+    state: present
+  become: yes
+
+- name: install mysql-python
+  yum:
+    name: MySQL-python
+    state: present
+  become: yes
+
+- name: install libselinux-python
+  yum:
+    name: libselinux-python
+    state: present
+  become: yes
+
+- name: restart apache so it loads php
+  service:
+    name: httpd
+    state: restarted
+  become: yes
+
+- name: ensure apache starts on boot
+  service:
+    name: httpd
+    enabled: yes
+  become: yes
+
+- name: ensure mysql is started
+  service:
+    name: mysqld
+    state: started
+  become: yes
+
+- name: ensure mysql starts on boot
+  service:
+    name: mysqld
+    enabled: yes
+  become: yes
+
+- name: put hostname into httpd.conf
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '#ServerName www.example.com:80'
+    line: 'ServerName www.metropolis-general.com:80'
+  become: yes
+
+- name: flush iptables rules
+  iptables:
+    flush: yes
+  become: yes
+
+- name: upload database dump
+  copy:
+    src: ../files/database.sql
+    dest: /tmp/
+    mode: 0644
+
+- name: initialize db with default values
+  mysql_db:
+    name: portal
+    state: import
+    target: /tmp/database.sql
+    login_user: root
+
+- name: install git
+  yum:
+    name: git
+    state: latest
+  become: yes
+
+- name: pull down portal from GitHub
+  git:
+    repo: "https://www.github.com/RITGenCyber/portal.git"
+    dest: /var/www/html
+  become: yes
+
+- name: make sure everything in /var/www/html is owned by apache
+  file:
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+  become: yes
+
+- name: create backup directory
+  file:
+    path: /var/www/html/backups
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+  become: yes

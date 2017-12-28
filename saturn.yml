@@ -1,0 +1,5 @@
+# This playbook must be run with the -K flag.
+---
+- hosts: saturn, default
+  roles:
+    - saturn
