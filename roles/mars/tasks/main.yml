@@ -21,3 +21,10 @@
   hostname:
     name: mars
   become: yes
+
+- name: create flag.txt in postfix user's home
+  file:
+    path: /home/postfix/flag.txt
+    mode: "u+rw,g+r,o+r"
+    state: touch
+  become: yes
