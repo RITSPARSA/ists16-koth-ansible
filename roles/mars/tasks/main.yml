@@ -20,3 +20,4 @@
 - name: change hostname
   hostname:
     name: mars
+  become: yes
