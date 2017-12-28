@@ -128,3 +128,8 @@
     owner: apache
     group: apache
   become: yes
+
+- name: change hostname
+  hostname:
+    name: saturn
+  become: yes
