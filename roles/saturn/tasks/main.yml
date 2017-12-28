@@ -88,15 +88,9 @@
     target: /tmp/database.sql
     login_user: root
 
-- name: install git
-  yum:
-    name: git
-    state: latest
-  become: yes
-
-- name: pull down portal from GitHub
-  git:
-    repo: "https://www.github.com/RITGenCyber/portal.git"
+- name: upload portal to server
+  synchronize:
+    src: roles/saturn/files/portal/*
     dest: /var/www/html
   become: yes
 
