@@ -8,7 +8,7 @@
     $adminQuery = mysqli_query($db, $adminCheck);
     $adminRow = mysqli_fetch_row($adminQuery);
     if ($adminRow[0] != "1") {
-        header("Location: http://www.metropolis-general.com/portal.php");
+        header("Location: portal.php");
         die();
     }
 

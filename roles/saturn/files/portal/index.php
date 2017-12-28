@@ -1,4 +1,4 @@
 <?php
-    header("Location: http://www.metropolis-general.com/login.php");
+    header("Location: login.php");
     die();
 ?>

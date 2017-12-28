@@ -37,7 +37,7 @@ Forget your password? Click <a href="change_password.php">here</a>.<br>
                 echo "<br>Invalid username or password.";
             }
             mysqli_free_result($result);
-            header("Location: http://www.metropolis-general.com/portal.php");
+            header("Location: portal.php");
             die();
         }
     }

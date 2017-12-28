@@ -27,7 +27,7 @@
             }
         }
         else {
-            header("Location: http://www.metropolis-general.com/portal.php");
+            header("Location: portal.php");
             die();
         }
     }
