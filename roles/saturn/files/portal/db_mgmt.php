@@ -18,17 +18,6 @@
                 "portal > /var/www/html/backups/" . $filename;
             shell_exec($command);
         }
-        else if (isset($_POST['restore'])) {
-            if (empty($_POST['filename'])) {
-                echo "Error: Please specify filename to restore from.";
-            }
-            else {
-                $filename = "/var/www/html/backups/" . $_POST['filename'];
-                shell_exec("mysqladmin -u root -f drop portal");
-                shell_exec("mysqladmin -u root -f create portal");
-                shell_exec("mysql -u root portal < " . $filename);
-            }
-        }
         else {
             if (empty($_POST['filename'])) {
                 echo "Error; Please specify filename to delete.";
@@ -55,7 +44,6 @@
 <form action='db_mgmt.php' method='post'>
 Filename: <input name='filename' type='text'><br>
 <button type="submit" name='backup'>Backup</button>
-<button type="submit" name='restore'>Restore</button>
 <button type="submit" name='delete'>Delete File</button>
 </form>
 
