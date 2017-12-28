@@ -2,6 +2,15 @@
 # webapp from GitHub.
 # This playbook was designed to be run with -K.
 ---
+
+# rsync fails for some reason when trying to sudo if this line is present
+- name: remove requiretty from /etc/sudoers
+  lineinfile:
+    path: /etc/sudoers
+    line: 'Defaults requiretty'
+    state: absent
+  become: yes
+
 - name: install apache
   yum:
     name: httpd
