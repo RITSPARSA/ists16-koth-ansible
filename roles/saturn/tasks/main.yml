@@ -90,8 +90,16 @@
 
 - name: upload portal to server
   synchronize:
-    src: roles/saturn/files/portal/*
+    src: roles/saturn/files/portal/
     dest: /var/www/html
+  become: yes
+
+- name: move portal files
+  command: mv /var/www/html/portal/* /var/www/html
+  become: yes
+
+- name: delete original portal directory
+  command: rmdir /var/www/html/portal
   become: yes
 
 - name: make sure everything in /var/www/html is owned by apache
@@ -110,4 +118,12 @@
     owner: apache
     group: apache
     mode: 0755
+  become: yes
+
+- name: create flag file
+  file:
+    path: /var/www/html/flag.txt
+    state: touch
+    owner: apache
+    group: apache
   become: yes
