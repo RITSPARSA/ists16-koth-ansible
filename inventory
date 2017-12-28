@@ -1,3 +1,5 @@
 # Each role should only have one VM per host group.
 
 [mars]
+
+[saturn]
