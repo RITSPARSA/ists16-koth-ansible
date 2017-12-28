@@ -96,6 +96,12 @@
     target: /tmp/database.sql
     login_user: root
 
+- name: make sure rsync is installed
+  yum:
+    name: rsync
+    state: installed
+  become: yes
+
 - name: upload portal to server
   synchronize:
     src: roles/saturn/files/portal/
