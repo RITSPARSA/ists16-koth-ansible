@@ -1,0 +1,7 @@
+# mars.yml - Deploy Mars irateplow machine.
+# Flag location: /home/postfix/flag.txt, reachable via anon ftp
+# This playbook must be run with the -K flag.
+---
+- hosts: mars
+  roles:
+    - mars

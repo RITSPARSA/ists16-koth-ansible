@@ -1,0 +1,30 @@
+# main.yml - Performs the Postfix, Procmail, Bash, and vsftpd installs.
+# This playbook requires the -K flag. This playbook is designed
+# to be run against a system with Debian 8 installed on it.
+# This playbook also requires that a shell other than bash be set for the user
+# on the remote system. Ansible really doesn't like it when you uninstall bash
+# midway through a play if it's using it.
+---
+- include_tasks: postfix.yml
+- include_tasks: procmail.yml
+- include_tasks: bash.yml
+- include_tasks: vsftpd.yml
+
+- name: allow sudo group to perform commands with no password
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^%sudo'
+    line: "%sudo ALL=(ALL:ALL) NOPASSWD:ALL"
+  become: yes
+
+- name: change hostname
+  hostname:
+    name: mars
+  become: yes
+
+- name: create flag.txt in postfix user's home
+  file:
+    path: /home/postfix/flag.txt
+    mode: "u+rw,g+r,o+r"
+    state: touch
+  become: yes

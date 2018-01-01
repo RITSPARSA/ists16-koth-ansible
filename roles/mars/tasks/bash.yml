@@ -1,0 +1,60 @@
+# bash.yml - Compile bash 4.1, which is vulnerable to shellshock, and replace
+# the standard version of bash with this older version.
+# Reminder: make sure that the shell Ansible is using to connect to the
+# mailserver is NOT bash. This include file specifically will break hard if
+# it's trying to uninstall bash while using bash. This include file will change
+# the root and mgmtadmin shells to use bash once it is reinstalled.
+---
+- name: download and unpack bash source
+  unarchive:
+    src: http://ftpmirror.gnu.org/gnu/bash/bash-4.1.tar.gz
+    dest: /tmp
+    remote_src: True
+
+- name: run configure script
+  raw: cd /tmp/bash-4.1 && ./configure
+
+- name: build bash-4.1
+  make:
+    chdir: /tmp/bash-4.1
+
+# apt-get makes you jump through hoops if you try to remove core packages
+
+- name: uninstall current version of bash
+  raw: echo "Yes, do as I say!" | apt-get remove bash
+  become: yes
+
+- name: install bash-4.1
+  raw: cd /tmp/bash-4.1 && make install
+  become: yes
+
+- name: symlink at /usr/bin/bash
+  file:
+    src: /usr/local/bin/bash
+    dest: /usr/bin/bash
+    state: link
+  become: yes
+
+- name: symlink at /bin/bash
+  file:
+    src: /usr/local/bin/bash
+    dest: /bin/bash
+    state: link
+  become: yes
+
+- name: switch shell to bash for root
+  user:
+    name: root
+    shell: /bin/bash
+  become: yes
+
+- name: switch shell to bash for mgmtadmin
+  user:
+    name: mgmtadmin
+    shell: /bin/bash
+  become: yes
+
+- name: remove files from /tmp
+  file:
+    path: /tmp/bash-4.1
+    state: absent

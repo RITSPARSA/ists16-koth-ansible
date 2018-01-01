@@ -1,0 +1,132 @@
+# main.yml - Installs webserver stuff, puts portal down using rsync, creates flag
+# This playbook was designed to be run with -K.
+---
+- name: install libselinux-python # various commands fail without selinux bindings
+  yum:
+    name: libselinux-python
+    state: present
+  become: yes
+
+# rsync fails for some reason when trying to sudo if this line is present
+- name: remove requiretty from /etc/sudoers
+  lineinfile:
+    path: /etc/sudoers
+    regexp: 'Defaults +requiretty'
+    state: absent
+  become: yes
+
+- name: install apache
+  yum:
+    name: httpd
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: install php
+  yum:
+    name: php
+    state: present
+  become: yes
+
+- name: install mysql
+  yum:
+    name: mysql-server
+    state: present
+  become: yes
+
+- name: install php-mysql
+  yum:
+    name: php-mysql
+    state: present
+  become: yes
+
+- name: install mysql-python
+  yum:
+    name: MySQL-python
+    state: present
+  become: yes
+
+- name: restart apache so it loads php
+  service:
+    name: httpd
+    state: restarted
+  become: yes
+
+- name: ensure apache starts on boot
+  service:
+    name: httpd
+    enabled: yes
+  become: yes
+
+- name: ensure mysql is started
+  service:
+    name: mysqld
+    state: started
+  become: yes
+
+- name: ensure mysql starts on boot
+  service:
+    name: mysqld
+    enabled: yes
+  become: yes
+
+- name: flush iptables rules
+  iptables:
+    flush: yes
+  become: yes
+
+- name: upload database dump
+  copy:
+    src: ../files/database.sql
+    dest: /tmp/
+    mode: 0644
+
+- name: initialize db with default values
+  mysql_db:
+    name: portal
+    state: import
+    target: /tmp/database.sql
+    login_user: root
+
+- name: make sure rsync is installed
+  yum:
+    name: rsync
+    state: installed
+  become: yes
+
+- name: upload portal to server
+  synchronize:
+    src: roles/saturn/files/portal/
+    dest: /var/www/html
+  become: yes
+
+- name: make sure everything in /var/www/html is owned by apache
+  file:
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+  become: yes
+
+- name: create backup directory
+  file:
+    path: /var/www/html/backups
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0755
+  become: yes
+
+- name: create flag file
+  file:
+    path: /var/www/html/flag.txt
+    state: touch
+    owner: apache
+    group: apache
+  become: yes
+
+- name: change hostname
+  hostname:
+    name: saturn
+  become: yes

@@ -1,0 +1,23 @@
+# vsftpd.yml - Install anonymous vsftpd.
+---
+- name: install vsftpd
+  package:
+    name: vsftpd
+    state: present
+  become: yes
+
+- name: copy config 
+  copy:
+    src: ../files/vsftpd.conf
+    dest: /etc/vsftpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: restart and enable vsftpd
+  service:
+    name: vsftpd
+    state: restarted
+    enabled: yes
+  become: yes
