@@ -1,0 +1,37 @@
+# deploy_ftp.yml - Install anonymous vsftpd.
+
+- name: install vsftpd
+  package:
+    name: vsftpd
+    state: present
+  become: yes
+
+- name: copy config 
+  copy:
+    src: ../files/vsftpd.conf
+    dest: /etc/vsftpd/vsftpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: modify permissions of ftp dir
+  file:
+    path: /home/galileo
+    mode: 0755
+
+- name: restart and enable vsftpd
+  service:
+    name: vsftpd
+    state: restarted
+    enabled: yes
+  become: yes
+
+
+- name: disable firewall
+  command: systemctl stop firewalld
+  become: yes
+
+- name: disable selinux
+  command: setenforce 0
+  become: yes

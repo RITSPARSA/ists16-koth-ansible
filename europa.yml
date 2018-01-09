@@ -5,3 +5,4 @@
   tasks:
       - ping:
       - import_tasks: roles/europa/tasks/deploy_rbash.yml
+      - import_tasks: roles/europa/tasks/deploy_ftp.yml
