@@ -17,8 +17,14 @@
     owner: root
     group: root
     mode: 0600
+  notify:
+    - Restart xinetd
 
-- name: Restart xinetd
-  systemd:
-    name: xinetd
-    state: restarted
+- name: Allow remote finger connections
+  firewalld:
+    zone: public
+    port: 79/tcp
+    permanent: true
+    state: enabled
+  notify:
+    - Restart firewalld

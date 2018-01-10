@@ -1,0 +1,10 @@
+---
+- name: Restart xinetd
+  systemd:
+    name: xinetd
+    state: restarted
+
+- name: Restart firewalld
+  systemd:
+    name: firewalld
+    state: restarted
