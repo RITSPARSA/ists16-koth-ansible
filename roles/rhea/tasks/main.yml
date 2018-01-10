@@ -1,2 +1,24 @@
 # This playbook was designed to be run with -K.
 ---
+- name: Install packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - finger
+    - finger-server
+    - xinetd
+
+- name: Configure finger service
+  copy:
+    src: finger
+    dest: /etc/xinetd.d/finger
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Restart xinetd
+  systemd:
+    name: xinetd
+    state: restarted

@@ -1,6 +1,6 @@
 # rhea.yml - Deploy the rhea irateplow machine.
 # Flag location: TODO
-# This playbook must be run with the -K flag.
+# This playbook must be run with the -K and -k flags (upper and lowercase).
 ---
 - hosts: rhea
   roles:
