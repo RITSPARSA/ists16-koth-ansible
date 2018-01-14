@@ -9,6 +9,8 @@
     - finger
     - finger-server
     - xinetd
+    - net-snmp
+    - net-snmp-utils
 
 - name: Configure finger service
   copy:
@@ -20,11 +22,24 @@
   notify:
     - Restart xinetd
 
-- name: Allow remote finger connections
+- name: Configure SNMP service
+  copy:
+    src: snmpd.conf
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - Restart snmpd
+
+- name: Allow finger and SNMP connections
   firewalld:
     zone: public
-    port: 79/tcp
+    port: "{{ item }}"
     permanent: true
     state: enabled
   notify:
     - Restart firewalld
+  with_items:
+    - 79/tcp
+    - 161-162/udp
