@@ -1,15 +1,38 @@
 ---
+# Finger and SNMP handlers
 - name: Restart xinetd
-  systemd:
+  service:
     name: xinetd
     state: restarted
 
 - name: Restart firewalld
-  systemd:
+  service:
     name: firewalld
     state: restarted
 
 - name: Restart snmpd
-  systemd:
+  service:
     name: snmpd
+    state: restarted
+
+# MySQL handlers
+- name: Reload privilege tables
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+
+# nginx handlers
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: Restart php processor
+  service:
+    name: php7.0-fpm
     state: restarted
