@@ -1,0 +1,17 @@
+---
+- name: Install apt dependencies for mysql_secure_installation
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - python-setuptools
+    - libmysqlclient-dev
+    - gcc
+    - python-dev
+
+- name: Install pip
+  easy_install: name=pip state=present
+
+- name: Install mysql_python packages
+  pip: name=mysql-python

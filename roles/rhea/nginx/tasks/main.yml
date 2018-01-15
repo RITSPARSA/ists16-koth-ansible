@@ -1,0 +1,65 @@
+---
+- name: Install nginx server
+  apt: name=nginx state=present update_cache=true
+  notify:
+    - Start nginx
+
+- name: Install PHP packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - php-fpm
+    - php-mysql
+
+- name: Fix php-fpm configuration
+  copy:
+    src: php.ini
+    dest: /etc/php/7.0/fpm/php.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart php processor
+
+- name: Generate nginx server block file
+  template:
+    src: server-block.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart nginx
+
+- name: Enable nginx server
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart nginx
+
+- name: Install Wordpress PHP packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - php-curl
+    - php-gd
+    - php-mbstring
+    - php-mcrypt
+    - php-xml
+    - php-xmlrpc
+  notify:
+    - Restart php processor
+  
+- name: Remove default index file
+  file:
+    name: /var/www/html/index.nginx-debian.html
+    state: absent

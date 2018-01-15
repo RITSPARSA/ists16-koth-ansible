@@ -1,0 +1,13 @@
+---
+- name: Create Wordpress database
+  mysql_db:
+    name: "{{ mysql_app_database }}"
+    state: present
+
+- name: Create Wordpress user with privileges
+  mysql_user:
+    name: "{{ mysql_app_user }}"
+    password: "{{ mysql_app_pass }}"
+    priv: '{{ mysql_app_database }}.*:ALL'
+  notify:
+    - Reload privilege tables
