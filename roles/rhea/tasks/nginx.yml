@@ -28,6 +28,8 @@
     owner: root
     group: root
     mode: 644
+  notify:
+    - Restart nginx
 
 - name: Install PHP packages
   yum:
@@ -95,3 +97,12 @@
     name: nginx
     state: started
     enabled: yes
+
+- name: Open firewall for HTTP
+  firewalld:
+    zone: public
+    service: http
+    permanent: true
+    state: enabled
+  notify:
+    - Restart firewalld
