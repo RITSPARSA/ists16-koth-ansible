@@ -27,7 +27,7 @@
 - name: Fix php-fpm configuration
   copy:
     src: php.ini
-    dest: /etc/php/7.0/fpm/php.ini
+    dest: /etc/php.ini
     owner: root
     group: root
     mode: 0644
