@@ -15,6 +15,14 @@
   notify:
     - Start nginx
 
+- name: Add document root
+  file:
+    path: /var/{{ item }}
+    state: directory
+  with_items:
+    - www
+    - www/html
+
 - name: Add nginx configuration
   copy:
     src: nginx.conf
