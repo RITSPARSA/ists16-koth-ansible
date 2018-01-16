@@ -16,7 +16,7 @@
     - Start nginx
 
 - name: Install PHP packages
-  apt:
+  yum:
     name: "{{ item }}"
     state: present
     update_cache: true
