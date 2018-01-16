@@ -13,6 +13,13 @@
     - net-snmp-utils
     - mariadb
     - mariadb-server
+  notify:
+    - Enable MySQL
+    - Start MySQL
+
+# We want mysql to be started before we continue, because some stuff depends on
+# it running
+- meta: flush_handlers
 
 - name: Configure finger service
   copy:

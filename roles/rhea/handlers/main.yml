@@ -16,6 +16,16 @@
     state: restarted
 
 # MySQL handlers
+- name: Enable MySQL
+  service:
+    name: mariadb
+    enabled: yes
+
+- name: Start MySQL
+  service:
+    name: mariadb
+    state: started
+
 - name: Reload privilege tables
   command: 'mysql -ne "{{ item }}"'
   with_items:
