@@ -1,14 +1,14 @@
 ---
 - name: Install apt dependencies for mysql_secure_installation
-  apt:
+  yum:
     name: "{{ item }}"
     state: present
     update_cache: yes
   with_items:
     - python-setuptools
-    - libmysqlclient-dev
+    - mysql-devel
     - gcc
-    - python-dev
+    - python-devel
 
 - name: Install pip
   easy_install: name=pip state=present

@@ -1,6 +1,17 @@
 ---
+- name: Add nginx repository
+  copy:
+    src: nginx.repo
+    dest: /etc/yum.repos.d/nginx.repo
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Install nginx server
-  apt: name=nginx state=present update_cache=true
+  yum:
+    name: nginx
+    state: present
+    update_cache: yes
   notify:
     - Start nginx
 
@@ -45,15 +56,13 @@
     - Restart nginx
 
 - name: Install Wordpress PHP packages
-  apt:
+  yum:
     name: "{{ item }}"
     state: present
     update_cache: true
   with_items:
-    - php-curl
     - php-gd
     - php-mbstring
-    - php-mcrypt
     - php-xml
     - php-xmlrpc
   notify:
