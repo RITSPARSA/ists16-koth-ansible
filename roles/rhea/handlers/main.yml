@@ -44,5 +44,5 @@
 
 - name: Restart php processor
   service:
-    name: php7.0-fpm
+    name: php-fpm
     state: restarted
