@@ -15,6 +15,14 @@
   notify:
     - Start nginx
 
+- name: Add nginx configuration
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 644
+
 - name: Install PHP packages
   yum:
     name: "{{ item }}"
@@ -33,6 +41,14 @@
     mode: 0644
   notify:
     - Restart php processor
+
+- name: Create virtual hosts directories
+  file:
+    path: /etc/nginx/{{ item }}
+    state: directory
+  with_items:
+    - sites-available
+    - sites-enabled
 
 - name: Generate nginx server block file
   template:
