@@ -12,8 +12,6 @@
     name: nginx
     state: present
     update_cache: yes
-  notify:
-    - Start nginx
 
 - name: Add document root
   file:
@@ -91,8 +89,9 @@
     - php-xmlrpc
   notify:
     - Restart php processor
-  
-- name: Remove default index file
-  file:
-    name: /var/www/html/index.nginx-debian.html
-    state: absent
+
+- name: Enable and start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
