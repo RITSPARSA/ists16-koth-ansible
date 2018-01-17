@@ -40,10 +40,20 @@
     - php-fpm
     - php-mysql
 
-- name: Fix php-fpm configuration
+- name: Fix php.ini
   copy:
     src: php.ini
     dest: /etc/php.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart php processor
+
+- name: Fix php-fpm www configuration
+  copy:
+    src: www.conf
+    dest: /etc/php-fpm.d/www.conf
     owner: root
     group: root
     mode: 0644
