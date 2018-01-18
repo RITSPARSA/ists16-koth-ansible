@@ -53,6 +53,10 @@
     - 79/tcp
     - 161-162/udp
 
+- name: Turn off SELinux
+  selinux:
+    state: disabled
+
 # Wordpress installation
 - import_tasks: mysql.yml
 - import_tasks: nginx.yml
