@@ -71,18 +71,7 @@
 - name: Generate nginx server block file
   template:
     src: server-block.j2
-    dest: /etc/nginx/sites-available/default
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - Restart nginx
-
-- name: Enable nginx server
-  file:
-    src: /etc/nginx/sites-available/default
-    dest: /etc/nginx/sites-enabled/default
-    state: link
+    dest: /etc/nginx/conf.d/default
     owner: root
     group: root
     mode: 0644
