@@ -60,6 +60,11 @@
   notify:
     - Restart php processor
 
+- name: Remove default server block file
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+
 - name: Generate nginx server block file
   template:
     src: server-block.j2
