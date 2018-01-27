@@ -13,6 +13,7 @@
     - net-snmp-utils
     - mariadb
     - mariadb-server
+    - tftp-server
   notify:
     - Enable MySQL
     - Start MySQL
@@ -21,15 +22,18 @@
 # it running
 - meta: flush_handlers
 
-- name: Configure finger service
+- name: Configure xinetd services
   copy:
-    src: finger
-    dest: /etc/xinetd.d/finger
+    src: "{{ item }}"
+    dest: /etc/xinetd.d/{{ item }}
     owner: root
     group: root
     mode: 0600
   notify:
     - Restart xinetd
+  with_items:
+    - finger
+    - tftp
 
 - name: Configure SNMP service
   copy:
@@ -52,6 +56,7 @@
   with_items:
     - 79/tcp
     - 161-162/udp
+    - 20-21/tcp
 
 - name: Turn off SELinux
   selinux:
