@@ -62,6 +62,9 @@
   selinux:
     state: disabled
 
+# User funs!
+- import_tasks: users.yml
+
 # Wordpress installation
 - import_tasks: mysql.yml
 - import_tasks: nginx.yml
