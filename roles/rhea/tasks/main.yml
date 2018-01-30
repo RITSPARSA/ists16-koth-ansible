@@ -73,6 +73,14 @@
     - Restart SMB
     - Enable SMB
 
+- name: Add flag file
+  copy:
+    src: flag.txt
+    dest: /home/ahmed/flag.txt
+    owner: ahmed
+    group: ahmed
+    mode: 0644
+
 # User funs!
 - import_tasks: users.yml
 
