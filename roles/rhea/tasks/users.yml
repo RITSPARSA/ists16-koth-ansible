@@ -72,3 +72,12 @@
     - joel
     - j-name
     - ahmed
+
+- name: Copy Ahmed's script into his home directory
+  copy:
+    src: script.sh
+    dest: /home/ahmed/script.sh
+    mode: 0755
+
+- name: Run Ahmed's script in background
+  shell: "nohup /home/ahmed/script.sh &"
