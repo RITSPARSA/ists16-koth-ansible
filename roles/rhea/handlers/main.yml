@@ -46,3 +46,14 @@
   service:
     name: php-fpm
     state: restarted
+
+# Samba handlers
+- name: Restart SMB
+  service:
+    name: smb
+    state: restarted
+
+- name: Enable SMB
+  service:
+    name: smb
+    enabled: yes
