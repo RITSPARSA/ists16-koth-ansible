@@ -45,19 +45,6 @@
   notify:
     - Restart snmpd
 
-- name: Allow finger and SNMP connections
-  firewalld:
-    zone: public
-    port: "{{ item }}"
-    permanent: true
-    state: enabled
-  notify:
-    - Restart firewalld
-  with_items:
-    - 79/tcp
-    - 161-162/udp
-    - 20-21/tcp
-
 - name: Turn off SELinux
   selinux:
     state: disabled
@@ -69,3 +56,13 @@
 - import_tasks: mysql.yml
 - import_tasks: nginx.yml
 - import_tasks: wordpress.yml
+
+- name: Turn off firewalld
+  service:
+    name: firewalld
+    state: stopped
+
+- name: Disable firewalld
+  service:
+    name: firewalld
+    enabled: no

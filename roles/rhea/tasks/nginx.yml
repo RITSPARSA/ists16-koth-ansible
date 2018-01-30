@@ -93,12 +93,3 @@
     name: nginx
     state: started
     enabled: yes
-
-- name: Open firewall for HTTP
-  firewalld:
-    zone: public
-    service: http
-    permanent: true
-    state: enabled
-  notify:
-    - Restart firewalld
