@@ -1,5 +1,5 @@
 ---
-- name: Install apt dependencies for mysql_secure_installation
+- name: Install dependencies for mysql_secure_installation
   yum:
     name: "{{ item }}"
     state: present
