@@ -1,0 +1,95 @@
+---
+- name: Add nginx repository
+  copy:
+    src: nginx.repo
+    dest: /etc/yum.repos.d/nginx.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install nginx server
+  yum:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Add document root
+  file:
+    path: /var/{{ item }}
+    state: directory
+  with_items:
+    - www
+    - www/html
+
+- name: Add nginx configuration
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 644
+  notify:
+    - Restart nginx
+
+- name: Install PHP packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - php-fpm
+    - php-mysql
+
+- name: Fix php.ini
+  copy:
+    src: php.ini
+    dest: /etc/php.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart php processor
+
+- name: Fix php-fpm www configuration
+  copy:
+    src: www.conf
+    dest: /etc/php-fpm.d/www.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart php processor
+
+- name: Remove default server block file
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
+
+- name: Generate nginx server block file
+  template:
+    src: server-block.j2
+    dest: /etc/nginx/conf.d/default
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart nginx
+
+- name: Install Wordpress PHP packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - php-gd
+    - php-mbstring
+    - php-xml
+    - php-xmlrpc
+  notify:
+    - Restart php processor
+
+- name: Enable and start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes

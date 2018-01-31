@@ -1,0 +1,32 @@
+---
+- name: Install unzip
+  yum:
+    name: unzip
+    state: present
+    update_cache: yes
+
+- name: Extract Wordpress files
+  unarchive:
+    src: https://wordpress.org/wordpress-{{ wordpress_version }}.zip
+    dest: /var/www/html
+    owner: nginx
+    group: nginx
+    remote_src: yes
+    creates: /var/www/html/wordpress
+
+- name: Create Wordpress upgrade directory
+  file:
+    path: /var/www/html/wordpress/wp-content/upgrade
+    state: directory
+    owner: nginx
+    group: nginx
+    mode: 2760
+    recurse: yes
+
+- name: Generate Wordpress config
+  template:
+    src: wp-config.j2
+    dest: /var/www/html/wordpress/wp-config.php
+    owner: nginx
+    group: nginx
+    mode: 0644

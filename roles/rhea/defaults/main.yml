@@ -1,0 +1,20 @@
+---
+# MySQL information
+mysql_app_database: rhea
+mysql_app_user: wp-user
+mysql_app_pass: changeme
+mysql_root_password:
+
+# nginx information
+domain_name: localhost
+
+# Wordpress information
+wordpress_version: 4.9.1
+wp_auth_key: 5uUN~y|Pm)XYRr`3hSWj*{_8B:6;,aiP}96R}O$y*azcpbEJkzH*oPh.~];oW~Dk
+wp_secure_auth_key: Ii1L#fuP1nrVd>pCb++P<(;L-o(:]$i<^T6LeKz|kUSl&,Vwo?H+wlFS^?>p:Qmb
+wp_logged_in_key: y(+k0Qt##h%eU-Qy+cipI>|VtnLKn@S52OO/|k/W%qr)ie]&,G+UH.s=S[+=Z;*U
+wp_nonce_key: KBz{AS2047HiG-^:G-Bg;@_aRy@v5>`)SgX`X>G5W^Y4La6&.o;o)hj?w~9W?e{t
+wp_auth_salt: x0>,xKj-^6%uw8B+O8f*B-Q)hC))8{.g=maDv^k-ElU*s-ACJi94;|}]F|3Q(]0-
+wp_secure_auth_salt: crmEO#?<|G,st8+-g>wL9#KiE6r8bBY=q[po+rBAr(/Z--8u,Y4?!-4LpEEIllv+
+wp_logged_in_salt: KJ`znmh2b<!:gVBU@49/c{pVPs*K:O:EJc&{l!QT1Z)!t:|fu*n_q.`d<eE.Wdh-
+wp_nonce_salt: ttF_K-{cGDBZ-X(+?!og)HT|*B$wEd-^UJe)FBE7~6B8R/%axLV+VA/~4/~1[*73

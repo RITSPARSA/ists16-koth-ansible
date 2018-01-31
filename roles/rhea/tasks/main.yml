@@ -1,0 +1,100 @@
+# This playbook was designed to be run with -K.
+---
+- name: Install packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - finger
+    - finger-server
+    - xinetd
+    - net-snmp
+    - net-snmp-utils
+    - mariadb
+    - mariadb-server
+    - tftp-server
+    - samba*
+  notify:
+    - Enable MySQL
+    - Start MySQL
+
+# We want mysql to be started before we continue, because some stuff depends on
+# it running
+- meta: flush_handlers
+
+- name: Configure xinetd services
+  copy:
+    src: "{{ item }}"
+    dest: /etc/xinetd.d/{{ item }}
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - Restart xinetd
+  with_items:
+    - finger
+    - tftp
+
+- name: Configure SNMP service
+  copy:
+    src: snmpd.conf
+    dest: /etc/snmp/snmpd.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - Restart snmpd
+
+- name: Turn off SELinux
+  selinux:
+    state: disabled
+
+# Doing this just in case the base images disables password auth
+- name: Reconfigure sshd
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0600
+  notify:
+    - Restart sshd
+
+# SMB share access to Ahmed's home directory for scoring purposes
+- name: Configure SMB
+  copy:
+    src: smb.conf
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart SMB
+    - Enable SMB
+
+# User funs!
+- import_tasks: users.yml
+
+# Wordpress installation
+- import_tasks: mysql.yml
+- import_tasks: nginx.yml
+- import_tasks: wordpress.yml
+
+- name: Add flag file
+  copy:
+    src: flag.txt
+    dest: /home/ahmed/flag.txt
+    owner: ahmed
+    group: ahmed
+    mode: 0644
+
+- name: Turn off firewalld
+  service:
+    name: firewalld
+    state: stopped
+
+- name: Disable firewalld
+  service:
+    name: firewalld
+    enabled: no

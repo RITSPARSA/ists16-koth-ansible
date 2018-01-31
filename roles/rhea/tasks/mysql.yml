@@ -1,0 +1,4 @@
+---
+- import_tasks: dependencies.yml
+- import_tasks: mysql_secure_installation.yml
+- import_tasks: app_database.yml

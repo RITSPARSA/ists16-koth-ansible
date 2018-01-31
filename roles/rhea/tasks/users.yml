@@ -1,0 +1,83 @@
+---
+- name: Add a bunch of users
+  user:
+    name: "{{ item }}"
+    state: present
+    shell: /dev/null
+  with_items:
+    - john
+    - joe
+    - jack
+    - jake
+    - jordan
+    - joseph
+    - jamal
+    - juan
+    - jose
+    - jackson
+    - jamie
+    - joel
+    - j-name
+
+- name: Add a user with login privileges
+  user:
+    name: ahmed
+    state: present
+    shell: /bin/bash
+    password: "{{ 'ahmed' | password_hash('sha512') }}"
+
+- name: Give everyone a plan.
+  copy:
+    src: finger.plan
+    dest: /home/{{ item }}/.plan
+    mode: 0755
+  with_items:
+    - john
+    - joe
+    - jack
+    - jake
+    - jordan
+    - joseph
+    - jamal
+    - juan
+    - jose
+    - jackson
+    - jamie
+    - joel
+    - j-name
+
+- name: Give Ahmed the right plan.
+  copy:
+    src: ahmed.plan
+    dest: /home/ahmed/.plan
+    mode: 0755
+
+- name: Fix user directories
+  file:
+    name: /home/{{ item }}
+    state: directory
+    mode: 0755
+  with_items:
+    - john
+    - joe
+    - jack
+    - jake
+    - jordan
+    - joseph
+    - jamal
+    - juan
+    - jose
+    - jackson
+    - jamie
+    - joel
+    - j-name
+    - ahmed
+
+- name: Copy Ahmed's script into his home directory
+  copy:
+    src: script.sh
+    dest: /home/ahmed/script.sh
+    mode: 0755
+
+- name: Run Ahmed's script in background
+  shell: "nohup /home/ahmed/script.sh &"

@@ -1,0 +1,17 @@
+---
+- name: Install dependencies for mysql_secure_installation
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - python-setuptools
+    - mysql-devel
+    - gcc
+    - python-devel
+
+- name: Install pip
+  easy_install: name=pip state=present
+
+- name: Install mysql_python packages
+  pip: name=mysql-python
