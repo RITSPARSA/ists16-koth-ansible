@@ -7,4 +7,4 @@
 [europa]
 
 [rhea]
-192.168.60.128 ansible_user=root
+ansible_user=root
